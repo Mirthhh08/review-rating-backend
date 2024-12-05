@@ -69,17 +69,16 @@ const addReview = asyncHandler(async (req, res) => {
     if (company.averageRating == 0) {
         updatedRating = review.rating
     } else {
-        updatedRating = (company.averageRating + review.rating) / 2
-
+        updatedRating = Math.ceil((company.averageRating + review.rating) / 2);
 
     }
     const updateResponse = await Company.findByIdAndUpdate(
         companyId,
         {
-            $addToSet: { reviews: review._id }, // Add the review to the reviews array
-            $set: { averageRating: updatedRating }, // Update the averageRating
+            $addToSet: { reviews: review._id },
+            $set: { averageRating: updatedRating },
         },
-        { new: true } // Return the updated document after the update
+        { new: true }
     );
     if (!updateResponse) {
         throw new ApiError(500, "Failed to update company with review");
